@@ -1,3 +1,5 @@
+# Trains a Vision Transformer model on the CIFAR-10 dataset and evaluates its test accuracy, 
+# saving the trained model's state.
 from pathlib import Path
 
 import torch
