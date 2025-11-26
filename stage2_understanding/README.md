@@ -33,4 +33,23 @@ You'll learn:
 
 This is the "oooohhh THAT'S how they think" stage.
 
+---
+
+## Image credits:
+
+### 🐶 1. Dog Close-Up (super clear subject)
+dog.jpg https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg
+
+### 🧍 2. Person Portrait (ViT LOVES faces)
+person.jpg https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg
+
+### 🌸 3. Flower Macro (simple shapes + great contrast)
+flower.jpg https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg
+
+### 🚗 4. Car (strong edges + recognizable ImageNet class)
+car.jpg https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg
+
+### 🐻 5. Bear (because my name deserves attention maps too)
+bear.jpg https://images.pexels.com/photos/145939/pexels-photo-145939.jpeg
+
 <br>
