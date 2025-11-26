@@ -49,7 +49,4 @@ flower.jpg https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg
 ### 🚗 4. Car (strong edges + recognizable ImageNet class)
 car.jpg https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg
 
-### 🐻 5. Bear (because my name deserves attention maps too)
-bear.jpg https://images.pexels.com/photos/145939/pexels-photo-145939.jpeg
-
 <br>
