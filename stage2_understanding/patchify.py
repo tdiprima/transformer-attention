@@ -47,6 +47,6 @@ if __name__ == "__main__":
     img_tensor = transform(img)
     patches = patchify(img_tensor, patch_size=16)
 
-    print("Image shape:", img_tensor.shape)
-    print("Patches shape:", patches.shape)
-    print("One patch vector length:", patches.shape[1])
+    print("Image shape:", img_tensor.shape)  # Image shape: torch.Size([3, 224, 224])
+    print("Patches shape:", patches.shape)  # Patches shape: torch.Size([196, 768])
+    print("One patch vector length:", patches.shape[1])  # One patch vector length: 768

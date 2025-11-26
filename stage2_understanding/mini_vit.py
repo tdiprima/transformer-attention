@@ -51,7 +51,7 @@ class MiniViT(nn.Module):
         self.patch_embed = PatchEmbed(img_size, patch_size, emb_dim)
         self.num_patches = self.patch_embed.num_patches
 
-        self.pos_embed = nn.Parameter(torch.randn(1, self.num_patches, emb_dim))
+        self.pos_embed = nn.Parameter(torch.randn(1, self.num_patches + 1, emb_dim))
 
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=emb_dim,
@@ -87,4 +87,4 @@ if __name__ == "__main__":
     img = torch.randn(1, 3, 224, 224)
     model = MiniViT()
     out = model(img)
-    print("Output shape:", out.shape)
+    print("Output shape:", out.shape)  # Output shape: torch.Size([1, 10])
