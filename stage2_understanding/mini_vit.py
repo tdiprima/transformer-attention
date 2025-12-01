@@ -1,14 +1,8 @@
 """
 🔧 mini_vit.py
 
-This is a tiny Vision Transformer (seriously tiny).
-Perfect for understanding the core architecture without drowning in details.
-
-It does:
-patch embedding
-positional encoding
-transformer encoder
-classification head
+Tiny toy Vision Transformer
+Minimal transformer encoder for images
 """
 
 import torch

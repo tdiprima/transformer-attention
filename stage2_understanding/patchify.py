@@ -1,8 +1,8 @@
 """
 🧩 patchify.py
 
-This script just chops an image into ViT-style patches and returns them as tensors.
-Run it directly to see patch shapes printed.
+Patchify images
+Chops images into ViT-style patches
 
 python patchify.py test_images/dog.jpg
 """

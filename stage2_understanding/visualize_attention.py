@@ -1,12 +1,8 @@
 """
 👀 visualize_attention.py
 
-This script:
-loads a pretrained ViT-B/16
-grabs the attention maps from the last attention block
-overlays them on the input image so you can see what the model focused on
-
-This is where transformers suddenly make sense.
+Attention-map visualizer
+Show model focusing on regions of an image
 
 python visualize_attention.py test_images/dog.jpg
 """
