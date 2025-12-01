@@ -3,6 +3,7 @@
 
 Attention-map visualizer
 Show model focusing on regions of an image
+How to visualize what parts of an image the model focuses on
 
 python visualize_attention.py test_images/dog.jpg
 """

@@ -3,6 +3,7 @@
 
 Patchify images
 Chops images into ViT-style patches
+How images → patches work
 
 python patchify.py test_images/dog.jpg
 """

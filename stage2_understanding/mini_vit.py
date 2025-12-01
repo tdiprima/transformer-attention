@@ -3,6 +3,8 @@
 
 Tiny toy Vision Transformer
 Minimal transformer encoder for images
+How attention modules operate
+Understanding the core architecture without drowning in details
 """
 
 import torch
@@ -42,11 +44,14 @@ class MiniViT(nn.Module):
     ):
         super().__init__()
 
+        # Patch embedding
         self.patch_embed = PatchEmbed(img_size, patch_size, emb_dim)
         self.num_patches = self.patch_embed.num_patches
 
+        # Positional embedding
         self.pos_embed = nn.Parameter(torch.randn(1, self.num_patches + 1, emb_dim))
 
+        # Transformer encoder
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=emb_dim,
             nhead=num_heads,
@@ -55,6 +60,7 @@ class MiniViT(nn.Module):
         )
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
 
+        # Classification head
         self.cls_head = nn.Linear(emb_dim, num_classes)
 
         # CLS Token (optional)
