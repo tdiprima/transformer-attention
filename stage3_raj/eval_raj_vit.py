@@ -8,22 +8,22 @@ uv run eval_raj_vit.py --checkpoint models_raj/vit_best.pth --output_csv preds.c
 import argparse
 import csv
 
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 import torch
 from torch.utils.data import DataLoader
 from torchvision import models
 from tqdm import tqdm
 
 from raj_dataset import RajDataset
-
-try:
-    from sklearn.metrics import classification_report, confusion_matrix
-
-    SKLEARN_AVAILABLE = True
-except Exception:
-    SKLEARN_AVAILABLE = False
-    print(
-        "sklearn not available — will compute basic accuracy only. (pip install scikit-learn for full report)"
-    )
+from sklearn.metrics import (
+    auc,
+    classification_report,
+    confusion_matrix,
+    roc_auc_score,
+    roc_curve,
+)
 
 
 def load_vit_model(num_classes, device, checkpoint_path):
@@ -86,15 +86,18 @@ def main():
     all_preds = []
     all_labels = []
     all_paths = []
+    all_probs = []
 
     with torch.no_grad():
         for images, labels, paths in tqdm(loader, ncols=120):
             images = images.to(device)
             outputs = model(images)
+            probs = torch.softmax(outputs, dim=1).cpu().numpy()
             preds = outputs.argmax(dim=1).cpu().numpy()
             all_preds.extend(preds.tolist())
             all_labels.extend(labels.numpy().tolist())
             all_paths.extend(paths)
+            all_probs.extend(probs)
 
     # save CSV
     with open(args.output_csv, "w", newline="") as f:
@@ -115,21 +118,109 @@ def main():
 
     print(f"Saved predictions to {args.output_csv}")
 
-    if SKLEARN_AVAILABLE:
-        print("Classification report:")
-        print(
-            classification_report(
-                all_labels, all_preds, target_names=ds.class_names(), digits=4
-            )
+    # Convert to numpy arrays
+    all_probs = np.array(all_probs)
+    all_labels = np.array(all_labels)
+    all_preds = np.array(all_preds)
+
+    # Print classification report
+    print("\nClassification report:")
+    print(
+        classification_report(
+            all_labels, all_preds, target_names=ds.class_names(), digits=4
         )
-        print("Confusion matrix:")
-        print(confusion_matrix(all_labels, all_preds))
-    else:
-        # fallback basic accuracy
-        correct = sum([1 if a == b else 0 for a, b in zip(all_preds, all_labels)])
-        total = len(all_labels)
-        print(f"Accuracy: {correct}/{total} = {correct/total:.4f}")
-        print("Install scikit-learn for nicer reports: pip install scikit-learn")
+    )
+
+    # Generate confusion matrix
+    cm = confusion_matrix(all_labels, all_preds)
+    print("\nConfusion matrix:")
+    print(cm)
+
+    # Save confusion matrix visualization
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=ds.class_names(),
+        yticklabels=ds.class_names(),
+    )
+    plt.title("Confusion Matrix")
+    plt.ylabel("True Label")
+    plt.xlabel("Predicted Label")
+    plt.tight_layout()
+    plt.savefig("confusion_matrix.png", dpi=300)
+    plt.close()
+    print("Saved confusion_matrix.png")
+
+    # Calculate ROC curves and AUC scores for each class
+    num_classes = ds.num_classes()
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+
+    for i in range(num_classes):
+        fpr[i], tpr[i], _ = roc_curve(all_labels == i, all_probs[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+
+    # Save ROC curves visualization
+    plt.figure(figsize=(10, 8))
+    colors = plt.cm.tab10(np.linspace(0, 1, num_classes))
+    for i, color in zip(range(num_classes), colors):
+        plt.plot(
+            fpr[i],
+            tpr[i],
+            color=color,
+            lw=2,
+            label=f"{ds.class_names()[i]} (AUC = {roc_auc[i]:.4f})",
+        )
+    plt.plot([0, 1], [0, 1], "k--", lw=2, label="Random Classifier")
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC Curves - One-vs-Rest")
+    plt.legend(loc="lower right")
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("roc_curves.png", dpi=300)
+    plt.close()
+    print("Saved roc_curves.png")
+
+    # Save AUC scores bar chart
+    plt.figure(figsize=(12, 6))
+    class_names = ds.class_names()
+    auc_scores = [roc_auc[i] for i in range(num_classes)]
+    colors = plt.cm.viridis(np.linspace(0.3, 0.9, num_classes))
+    bars = plt.bar(range(num_classes), auc_scores, color=colors, edgecolor="black")
+    plt.xlabel("Class")
+    plt.ylabel("AUC Score")
+    plt.title("AUC Scores by Class")
+    plt.xticks(range(num_classes), class_names, rotation=45, ha="right")
+    plt.ylim([0, 1.0])
+    plt.grid(axis="y", alpha=0.3)
+
+    # Add value labels on bars
+    for i, bar in enumerate(bars):
+        height = bar.get_height()
+        plt.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height + 0.01,
+            f"{height:.4f}",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+
+    plt.tight_layout()
+    plt.savefig("auc_scores.png", dpi=300)
+    plt.close()
+    print("Saved auc_scores.png")
+
+    # Print average AUC
+    avg_auc = np.mean(auc_scores)
+    print(f"\nAverage AUC: {avg_auc:.4f}")
 
 
 if __name__ == "__main__":
