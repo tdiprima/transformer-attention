@@ -7,6 +7,7 @@ uv run eval_raj_vit.py --checkpoint models_raj/vit_best.pth --output_csv preds.c
 
 import argparse
 import csv
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -41,11 +42,12 @@ def load_vit_model(num_classes, device, checkpoint_path):
 
 
 def main():
+    home = os.path.expanduser('~')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--root_dir",
         type=str,
-        default="/data/erich/raj/data/test",
+        default=f"{home}/local_data/test",
         help="root folder with class subfolders",
     )
     parser.add_argument(

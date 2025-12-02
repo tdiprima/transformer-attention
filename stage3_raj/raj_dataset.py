@@ -92,8 +92,9 @@ class RajDataset(Dataset):
 
 if __name__ == "__main__":
     # quick sanity check usage
+    home = os.path.expanduser('~')
     ds = RajDataset(
-        root_dir="/data/erich/raj/data/train", img_size=224, ensure_exists=False
+        root_dir=f"{home}/local_data/train", img_size=224, ensure_exists=False
     )
     print("Found classes:", ds.class_names())
     print("Length:", len(ds))

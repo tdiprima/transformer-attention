@@ -90,11 +90,12 @@ def eval_model(model, loader, criterion, device):
 
 
 def main():
+    home = os.path.expanduser('~')
     parser = argparse.ArgumentParser(description="Train ViT on Raj dataset")
     parser.add_argument(
         "--root_dir",
         type=str,
-        default="/data/erich/raj/data/train",
+        default=f"{home}/local_data/train",
         help="root folder with class subfolders",
     )
     parser.add_argument("--img_size", type=int, default=224)
