@@ -1,7 +1,12 @@
 """
 Trains a Vision Transformer (ViT) model on a custom dataset using PyTorch,
 with the option to save the best model based on validation accuracy.
-uv run train_raj_vit.py --epochs 8 --batch_size 16 --output_dir models_raj
+Optimized for multi-core CPU training (default: 70 threads for 72-core systems).
+
+Example usage:
+  uv run train_raj_vit.py --epochs 8 --batch_size 16 --output_dir models_raj
+  uv run train_raj_vit.py --epochs 10 --cpu_threads 72 --num_workers 20
+
 You can override the default paths if needed using the --root_dir argument.
 """
 
@@ -98,9 +103,15 @@ def main():
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--val_split", type=float, default=0.1)
     parser.add_argument("--output_dir", type=str, default="models")
-    parser.add_argument("--num_workers", type=int, default=4)
+    parser.add_argument("--num_workers", type=int, default=16)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--cpu_threads",
+        type=int,
+        default=70,
+        help="Number of CPU threads for PyTorch computation",
+    )
     args = parser.parse_args()
 
     # device
@@ -108,6 +119,12 @@ def main():
         args.device if args.device else ("cuda" if torch.cuda.is_available() else "cpu")
     )
     print("Using device:", device)
+
+    # Optimize CPU threading for 72 cores
+    if device.type == "cpu":
+        torch.set_num_threads(args.cpu_threads)
+        torch.set_num_interop_threads(8)
+        print(f"CPU threads set to: {args.cpu_threads}, interop threads: 8")
 
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
