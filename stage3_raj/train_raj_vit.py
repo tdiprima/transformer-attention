@@ -92,8 +92,12 @@ def eval_model(model, loader, criterion, device):
 
 
 def main():
-    home = os.path.expanduser('~')
-    parser = argparse.ArgumentParser(description="Train ViT on Raj dataset", formatter_class=RichHelpFormatter)
+    home = os.path.expanduser("~")
+    parser = argparse.ArgumentParser(
+        description="Train ViT on Raj dataset",
+        formatter_class=RichHelpFormatter,
+        add_help=True,
+    )
     parser.add_argument(
         "--root_dir",
         type=str,

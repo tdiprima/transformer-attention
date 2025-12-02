@@ -101,7 +101,11 @@ def verify_torchscript_model(scripted_model, original_model, device, img_size=22
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Convert ViT model to TorchScript", formatter_class=RichHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description="Convert ViT model to TorchScript",
+        formatter_class=RichHelpFormatter,
+        add_help=True,
+    )
     parser.add_argument(
         "--checkpoint",
         type=str,

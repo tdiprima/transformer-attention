@@ -14,8 +14,7 @@ import numpy as np
 import seaborn as sns
 import torch
 from rich_argparse import RichHelpFormatter
-from sklearn.metrics import (auc, classification_report, confusion_matrix,
-                             roc_curve)
+from sklearn.metrics import auc, classification_report, confusion_matrix, roc_curve
 from torch.utils.data import DataLoader
 from torchvision import models
 from tqdm import tqdm
@@ -44,8 +43,12 @@ def load_vit_model(num_classes, device, checkpoint_path):
 
 
 def main():
-    home = os.path.expanduser('~')
-    parser = argparse.ArgumentParser(description="Evaluate ViT on Raj dataset", formatter_class=RichHelpFormatter)
+    home = os.path.expanduser("~")
+    parser = argparse.ArgumentParser(
+        description="Evaluate ViT on Raj dataset",
+        formatter_class=RichHelpFormatter,
+        add_help=True,
+    )
     parser.add_argument(
         "--root_dir",
         type=str,

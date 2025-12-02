@@ -71,7 +71,11 @@ def predict(model, image_tensor, device, class_names=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="TorchScript model inference", formatter_class=RichHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description="TorchScript model inference",
+        formatter_class=RichHelpFormatter,
+        add_help=True,
+    )
     parser.add_argument(
         "--model",
         type=str,
