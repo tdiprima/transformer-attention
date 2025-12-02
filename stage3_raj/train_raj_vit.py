@@ -19,10 +19,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from raj_dataset import RajDataset
 from torch.utils.data import DataLoader, random_split
 from torchvision import models
 from tqdm import tqdm
+
+from raj_dataset import RajDataset
 
 
 def get_vit_model(num_classes, device, pretrained=True):

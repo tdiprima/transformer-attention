@@ -1,5 +1,6 @@
-from raj_dataset import RajDataset
 import os
+
+from raj_dataset import RajDataset
 
 home = os.path.expanduser('~')
 ds = RajDataset(root_dir=f"{home}/local_data/train")
