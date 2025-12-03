@@ -47,7 +47,7 @@ class RajDataset(Dataset):
         self.class_to_idx = {}
         self.idx_to_class = {}
 
-        # Walk folder structure
+        # Walk folder structure and collect potential samples
         classes = sorted(
             [
                 d
@@ -55,23 +55,46 @@ class RajDataset(Dataset):
                 if os.path.isdir(os.path.join(root_dir, d))
             ]
         )
+        potential_samples = []
         for c in classes:
             cpath = os.path.join(root_dir, c)
             for fname in os.listdir(cpath):
                 if fname.lower().endswith((".png", ".jpg", ".jpeg", ".tiff", ".bmp")):
-                    self.samples.append((os.path.join(cpath, fname), c))
+                    potential_samples.append((os.path.join(cpath, fname), c))
+
+        # Validate images and filter out corrupted ones
+        corrupted = []
+        for img_path, label in potential_samples:
+            # Check if file exists
+            if ensure_exists and not Path(img_path).exists():
+                corrupted.append((img_path, "File not found"))
+                continue
+
+            # Try to open the image to verify it's valid
+            try:
+                with Image.open(img_path) as img:
+                    img.verify()  # Verify it's a valid image
+                # Re-open after verify (verify makes the file object unusable)
+                with Image.open(img_path) as img:
+                    img.convert("RGB")  # Ensure it can be converted to RGB
+                self.samples.append((img_path, label))
+            except Exception as e:
+                corrupted.append((img_path, str(e)))
+
+        # Report any corrupted images
+        if corrupted:
+            print(f"Warning: Found {len(corrupted)} corrupted/invalid images. They will be skipped.")
+            print("First few corrupted files:")
+            for img_path, error in corrupted[:5]:
+                print(f"  - {img_path}: {error}")
+
+        if len(self.samples) == 0:
+            raise ValueError(f"No valid images found in {root_dir}")
 
         # Build class index
         classes = sorted(list({lbl for _, lbl in self.samples}))
         self.class_to_idx = {c: i for i, c in enumerate(classes)}
         self.idx_to_class = {i: c for c, i in self.class_to_idx.items()}
-
-        if ensure_exists:
-            missing = [p for p, _ in self.samples if not Path(p).exists()]
-            if missing:
-                raise FileNotFoundError(
-                    f"Found {len(missing)} missing images. Example: {missing[:3]}"
-                )
 
     def __len__(self):
         return len(self.samples)
