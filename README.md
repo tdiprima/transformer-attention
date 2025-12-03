@@ -57,8 +57,4 @@ I'm leveling up into attention-based models so I can contribute to real transfor
 work on biomedical images (Raj's classification data, spatial models, etc.).
 This repo is my playground to learn, experiment, and build confidence before I jump into the deep end.
 
-## 🐻 About Me
-
-Just a Bear learning transformers one patch at a time.
-
 <br>
