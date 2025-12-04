@@ -1,9 +1,9 @@
 """
 Example script demonstrating how to load and use a TorchScript model for inference.
-uv run inference_torchscript.py --model ../models_raj/vit_model.pt --image /path/to/image.png
+uv run inference_torchscript.py --model ../models/vit_model.pt --image /path/to/image.png
 
 uv run inference_torchscript.py \
-    --model ../models_raj/vit_model.pt \
+    --model ../models/vit_model.pt \
     --image /path/to/test/image.png \
     --class_names "Acinar tissue" "Dysplastic epithelium" "Fibrosis" "Lymph Aggregates" "Necrosis" "Nerves" "Normal ductal epithelium" "Reactive" "Stroma" "Tumor"
 """

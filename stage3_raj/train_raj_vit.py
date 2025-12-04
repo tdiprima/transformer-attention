@@ -4,7 +4,7 @@ with the option to save the best model based on validation accuracy.
 Optimized for multi-core CPU training (default: 70 threads for 72-core systems).
 
 Example usage:
-  uv run train_raj_vit.py --epochs 8 --batch_size 16 --output_dir models_raj
+  uv run train_raj_vit.py --epochs 8 --batch_size 16 --output_dir models
   uv run train_raj_vit.py --epochs 10 --cpu_threads 72 --num_workers 20
 
 You can override the default paths if needed using the --root_dir argument.
@@ -198,6 +198,11 @@ def main():
             print("  Saved best model.")
 
     print("Training finished. Best val acc:", best_val_acc)
+
+    # Epoch 10/10 — time: 2493.6s
+    # Train loss: 0.0088  acc: 0.9970
+    # Val   loss: 0.3399  acc: 0.9290
+    # Training finished. Best val acc: 0.9402219140083218
 
 
 if __name__ == "__main__":
