@@ -213,3 +213,4 @@ auc_scores.png
 .claude/
 data/
 models/
+evaluation_results/
